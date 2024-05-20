@@ -1,10 +1,7 @@
 module.exports = function (RED) {
   const dav = require('dav')
-  const webdav = require('webdav')
-  const fs = require('fs')
   const IcalExpander = require('ical-expander')
   const moment = require('moment')
-  const https = require('https')
 
   function CalDav (config) {
     RED.nodes.createNode(this, config)
@@ -15,8 +12,8 @@ module.exports = function (RED) {
     const node = this
 
     node.on('input', (msg) => {
-      let startDate = moment().startOf('day').subtract(this.pastWeeks, 'weeks')
-      let endDate = moment().endOf('day').add(this.futureWeeks, 'weeks')
+      const startDate = moment().startOf('day').subtract(this.pastWeeks, 'weeks')
+      const endDate = moment().endOf('day').add(this.futureWeeks, 'weeks')
       const filters = [{
         type: 'comp-filter',
         attrs: { name: 'VCALENDAR' },
@@ -52,11 +49,11 @@ module.exports = function (RED) {
           // account instanceof dav.Account
           account.calendars.forEach(function (calendar) {
             // Wenn Kalender gesetzt ist, dann nur diesen abrufen
-            let calName = msg.calendar || node.calendar
+            const calName = msg.calendar || node.calendar
             if (!calName || !calName.length || (calName && calName.length && calName === calendar.displayName)) {
               dav.listCalendarObjects(calendar, { xhr: xhr, filters: filters })
                 .then(function (calendarEntries) {
-                  let msg = { 'payload': { 'name': calendar.displayName, 'data': [] } }
+                  const msg = { payload: { name: calendar.displayName, data: [] } }
                   calendarEntries.forEach(function (calendarEntry) {
                     try {
                       const ics = calendarEntry.calendarData
@@ -86,8 +83,8 @@ module.exports = function (RED) {
 
     function _convertEvent (e) {
       if (e) {
-        let startDate = e.startDate.toString()
-        let endDate = e.endDate.toString()
+        const startDate = e.startDate.toString()
+        const endDate = e.endDate.toString()
 
         if (e.item) {
           e = e.item
@@ -143,14 +140,14 @@ module.exports = function (RED) {
           // account instanceof dav.Account
           account.addressBooks.forEach(function (addressBook) {
             // Wenn Adressbuch gesetzt ist, dann nur diesen abrufen
-            let c = msg.addressBook || node.addressBook
+            const c = msg.addressBook || node.addressBook
             if (!c || !c.length || (c && c.length && c === addressBook.displayName)) {
               dav.listVCards(addressBook, { xhr: xhr })
                 .then(function (addressBookEntries) {
-                  let vcfList = { 'payload': { 'name': addressBook.displayName, 'data': [] } }
+                  const vcfList = { payload: { name: addressBook.displayName, data: [] } }
                   addressBookEntries.forEach(function (addressBookEntry) {
                     const keyValue = addressBookEntry.addressData.split('\n')
-                    let vcfJson = {}
+                    const vcfJson = {}
                     for (let x = 0; x < keyValue.length; x++) {
                       const temp = keyValue[x].split(':')
                       vcfJson[temp[0]] = temp[1]
@@ -169,10 +166,4 @@ module.exports = function (RED) {
     })
   }
   RED.nodes.registerType('carddav', CardDav)
-
-
-
-
-
-  
 }

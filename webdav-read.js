@@ -1,5 +1,4 @@
 const { createClient } = require('webdav')
-// const fs = require('fs')
 const https = require('https')
 
 module.exports = function (RED) {
@@ -39,7 +38,7 @@ module.exports = function (RED) {
           console.log(contents)
           node.send({
             ...msg,
-            'payload': contents
+            payload: contents
           })
         }, function (error) {
           node.error(error.toString(), msg)
