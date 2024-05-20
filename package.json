@@ -23,7 +23,7 @@
     "dav": "^1.8.0",
     "ical-expander": "^2.0.0",
     "moment": "^2.22.2",
-    "webdav": "^2.5.0"
+    "webdav": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^6.4.0",
